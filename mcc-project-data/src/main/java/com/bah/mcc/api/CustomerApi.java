@@ -1,54 +1,106 @@
 package com.bah.mcc.api;
 
+import java.net.URI;
+import java.util.Iterator;
+import java.util.Optional;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.bah.mcc.domain.Customer;
+import com.bah.mcc.repository.CustomersRepository;
+import com.bah.mcc.logger.ApiLogger;
 
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/customers")
 public class CustomerApi {
-	
-	List<Customer> listofCustomers = new ArrayList<Customer>();
-	
-	public CustomerApi() {
-		Customer c1 = new Customer(1L, "Diana", "test 1", "dbohuslov@comcast.net");
-		Customer c2 = new Customer(1L, "Terry", "test 1", "tbohuslov@comcast.net");
-		Customer c3 = new Customer(3L, "Kerry", "test 1", "kerry@comcast.net");
-		Customer c4 = new Customer(4L, "Tom", "test 1", "tom@comcast.net");
-		
-		this.listofCustomers.add(c1);
-		this.listofCustomers.add(c2);
-		this.listofCustomers.add(c3);
-		this.listofCustomers.add(c4);
-	}
-		@GetMapping
-		public List<Customer> getListCustomers(){
-			return listofCustomers;
-		}
-		@GetMapping("/{customerId}")
-		public Customer getCustomer(@PathVariable("customerId") Long id) {
-			Customer myCustomer = null;
-			for(Customer customer: listofCustomers) {
-				if(customer.getId() == id) {
-					myCustomer = customer;
-				}
-			}
-			return myCustomer;
-		}
-		public void setListCustomers(ArrayList<Customer> listofCustomers) {
-			this.listofCustomers = listofCustomers;
-		}
-		public List<Customer> getAll(){
-			return this.getListCustomers();
-		}
-		
-	}
-	
+	@Autowired
+	CustomersRepository repo;
 
+	@GetMapping
+	public Iterable<Customer> getAll() {
+		return repo.findAll();
+	}
+
+
+	@GetMapping("/{customerId}")
+	public Optional<Customer> getCustomerById(@PathVariable("customerId") long id) {
+		return repo.findById(id);
+	}
+	
+	@PostMapping
+	public ResponseEntity<?> addCustomer(@RequestBody Customer newCustomer, UriComponentsBuilder uri) {
+		if (newCustomer.getId() != 0 || newCustomer.getName() == null || newCustomer.getEmail() == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		newCustomer = repo.save(newCustomer);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(newCustomer.getId()).toUri();
+		ResponseEntity<?> response = ResponseEntity.created(location).build();
+		return response;
+	}
+
+
+	@GetMapping("/byname/{username}")
+	public ResponseEntity<?> lookupCustomerByNameGet(@PathVariable("username") String username,
+			UriComponentsBuilder uri) {
+		ApiLogger.log("username: " + username);
+		
+		Iterator<Customer> customers = repo.findAll().iterator();
+		while(customers.hasNext()) {
+			Customer cust = customers.next();
+			if(cust.getName().equalsIgnoreCase(username)) {
+				ResponseEntity<?> response = ResponseEntity.ok(cust);
+				return response;				
+			}			
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+	}
+	
+	//lookupCustomerByName POST
+	@PostMapping("/byname")
+	public ResponseEntity<?> lookupCustomerByNamePost(@RequestBody String username, UriComponentsBuilder uri) {
+		ApiLogger.log("username: " + username);
+		Iterator<Customer> customers = repo.findAll().iterator();
+		while(customers.hasNext()) {
+			Customer cust = customers.next();
+			if(cust.getName().equals(username)) {
+				ResponseEntity<?> response = ResponseEntity.ok(cust);
+				return response;				
+			}			
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+	}	
+	
+	
+	@PutMapping("/{customerId}")
+	public ResponseEntity<?> putCustomer(
+			@RequestBody Customer newCustomer,
+			@PathVariable("customerId") long customerId) 
+	{
+		if (newCustomer.getId() != customerId || newCustomer.getName() == null || newCustomer.getEmail() == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		newCustomer = repo.save(newCustomer);
+		return ResponseEntity.ok().build();
+	}	
+	
+	@DeleteMapping("/{customerId}")
+	public ResponseEntity<?> deleteCustomerById(@PathVariable("customerId") long id) {
+		// https://mvnrepository.com/artifact/hsqldb/hsqldb
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+}
+		
+}
