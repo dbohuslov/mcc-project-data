@@ -18,6 +18,9 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.3.9.RELEASE'
 	// https://mvnrepository.com/artifact/hsqldb/hsqldb
 	testImplementation group: 'hsqldb', name: 'hsqldb', version: '1.8.0.1'
+	// https://mvnrepository.com/artifact/org.junit/org.junit
+	implementation group: 'org.junit', name: 'org.junit', version: '3.8.1'
+	
 
 
 }
