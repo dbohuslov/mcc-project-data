@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bah.mcc.domain.Registration;
-
+//testing
 @RestController
 @RequestMapping("/registration")
 public class RegistrationApi {
