@@ -20,11 +20,19 @@ public class ApiLogger {
 		}
 
 		public static void on() {
-			ApiLogger.on = true;
+			ApiLogger.setOn(true);
 		}
 
 		public static void off() {
-			ApiLogger.on = true;
+			ApiLogger.setOn(true);
+		}
+
+		public static boolean isOn() {
+			return on;
+		}
+
+		public static void setOn(boolean on) {
+			ApiLogger.on = on;
 		}
 
 }

@@ -41,7 +41,7 @@ public class EventApi {
 	
 	@PostMapping
 	public ResponseEntity<?> adEvent(@RequestBody Event newEvent, UriComponentsBuilder uri) {
-		if (newEvent.getId() != 0 || newEvent.getName() == null || newEvent.getEmail() == null) {
+		if (newEvent.getId() != 0 || newEvent.getDescription() == null || newEvent.getCode()== null || newEvent.getTitle() == null) {
 			// Reject we'll assign the Event id
 			return ResponseEntity.badRequest().build();
 		}
@@ -61,7 +61,7 @@ public class EventApi {
 		Iterator<Event> events = repo.findAll().iterator();
 		while(events.hasNext()) {
 			Event eve = events.next();
-			if(eve.getName().equalsIgnoreCase(event)) {
+			if(eve.getTitle().equalsIgnoreCase(event)) {
 				ResponseEntity<?> response = ResponseEntity.ok(eve);
 				return response;				
 			}			
@@ -76,7 +76,7 @@ public class EventApi {
 		Iterator<Event> events = repo.findAll().iterator();
 		while(events.hasNext()) {
 			Event eve = events.next();
-			if(eve.getName().equals(event)) {
+			if(eve.getTitle().equals(event)) {
 				ResponseEntity<?> response = ResponseEntity.ok(eve);
 				return response;				
 			}			
@@ -89,7 +89,7 @@ public class EventApi {
 			@RequestBody Event newEvent,
 			@PathVariable("eventId") long eventId) 
 	{
-		if (newEvent.getId() != eventId || newEvent.getName() == null || newEvent.getEmail() == null) {
+		if (newEvent.getId() != 0 || newEvent.getDescription() == null || newEvent.getCode()== null || newEvent.getTitle() == null) {
 			return ResponseEntity.badRequest().build();
 		}
 		newEvent = repo.save(newEvent);

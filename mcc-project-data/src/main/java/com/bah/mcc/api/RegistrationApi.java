@@ -41,7 +41,7 @@ public class RegistrationApi {
 	
 	@PostMapping
 	public ResponseEntity<?> addRegistration(@RequestBody Registration newRegistration, UriComponentsBuilder uri) {
-		if (newRegistration.getId() != 0 || newRegistration.getName() == null || newRegistration.getEmail() == null) {
+		if (newRegistration.getId() != 0 || newRegistration.getCustomer_name() == null || newRegistration.getEvent_name() == null || newRegistration.getNotes() == null || newRegistration.getNotes() == null) {
 			// Reject we'll assign the registration id
 			return ResponseEntity.badRequest().build();
 		}
@@ -61,7 +61,7 @@ public class RegistrationApi {
 		Iterator<Registration> registrations = repo.findAll().iterator();
 		while(registrations.hasNext()) {
 			Registration regist = registrations.next();
-			if(regist.getName().equalsIgnoreCase(registration)) {
+			if(regist.getEvent_name().equalsIgnoreCase(registration)) {
 				ResponseEntity<?> response = ResponseEntity.ok(regist);
 				return response;				
 			}			
@@ -76,7 +76,7 @@ public class RegistrationApi {
 		Iterator<Registration> regist = repo.findAll().iterator();
 		while(regist.hasNext()) {
 			Registration reg = regist.next();
-			if(reg.getName().equals(registration)) {
+			if(reg.getEvent_name().equals(registration)) {
 				ResponseEntity<?> response = ResponseEntity.ok(reg);
 				return response;				
 			}			
@@ -90,7 +90,7 @@ public class RegistrationApi {
 			@RequestBody Registration newRegistration,
 			@PathVariable("registrationId") long registrationId) 
 	{
-		if (newRegistration.getId() != registrationId || newRegistration.getName() == null || newRegistration.getEmail() == null) {
+		if (newRegistration.getId() != 0 || newRegistration.getCustomer_name() == null || newRegistration.getEvent_name() == null || newRegistration.getNotes() == null || newRegistration.getNotes() == null) {
 			return ResponseEntity.badRequest().build();
 		}
 		newRegistration = repo.save(newRegistration);
