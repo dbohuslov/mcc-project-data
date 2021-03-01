@@ -88,7 +88,7 @@ public class RegistrationApi {
 	@PutMapping("/{registrationId}")
 	public ResponseEntity<?> putRegistration(
 			@RequestBody Registration newRegistration,
-			@PathVariable("registrationId") long registrationId) 
+			@PathVariable("registrationId") long Id) 
 	{
 		if (newRegistration.getId() != 0 || newRegistration.getCustomer_name() == null || newRegistration.getEvent_name() == null || newRegistration.getNotes() == null || newRegistration.getNotes() == null) {
 			return ResponseEntity.badRequest().build();

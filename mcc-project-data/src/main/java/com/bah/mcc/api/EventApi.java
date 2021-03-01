@@ -87,7 +87,7 @@ public class EventApi {
 	@PutMapping("/{eventId}")
 	public ResponseEntity<?> putEvent(
 			@RequestBody Event newEvent,
-			@PathVariable("eventId") long eventId) 
+			@PathVariable("eventId") long Id) 
 	{
 		if (newEvent.getId() != 0 || newEvent.getDescription() == null || newEvent.getCode()== null || newEvent.getTitle() == null) {
 			return ResponseEntity.badRequest().build();
@@ -97,7 +97,7 @@ public class EventApi {
 	}	
 	
 	@DeleteMapping("/{eventId}")
-	public ResponseEntity<?> deleteEventById(@PathVariable("eventId") long id) {
+	public ResponseEntity<?> deleteEventById(@PathVariable("Id") long id) {
 		// repo.delete(id);
 		repo.deleteById(id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
