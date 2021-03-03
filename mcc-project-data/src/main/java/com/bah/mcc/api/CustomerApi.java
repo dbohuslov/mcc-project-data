@@ -98,6 +98,7 @@ public class CustomerApi {
 	
 	@DeleteMapping("/{customerId}")
 	public ResponseEntity<?> deleteCustomerById(@PathVariable("customerId") long id) {
+		repo.deleteById(id);
 		// https://mvnrepository.com/artifact/hsqldb/hsqldb
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 

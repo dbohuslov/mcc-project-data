@@ -21,7 +21,9 @@ public class Registration {
 	private String event_name;
 	@Column(name="CUSTOMER_ID")
 	private String customer_name;
-	
+	public Registration() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	public Registration(Long id, Date registration_date, String notes, String event_name, String customer_name) {
 		super();

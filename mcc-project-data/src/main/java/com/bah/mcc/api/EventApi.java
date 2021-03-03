@@ -21,9 +21,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.bah.mcc.repository.EventRepository;
 
 import com.bah.mcc.domain.Event;
+import com.bah.mcc.logger.ApiLogger;
 //
 @RestController
-@RequestMapping("/event")
+@RequestMapping("/events")
 public class EventApi {
 	@Autowired
 	EventRepository repo;
@@ -35,14 +36,14 @@ public class EventApi {
 
 	@GetMapping("/{eventId}")
 	public Optional<Event> getEventById(@PathVariable("eventId") long id) {
-		//return repo.findOne(id);
+		// return repo.findOne(id);
 		return repo.findById(id);
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> adEvent(@RequestBody Event newEvent, UriComponentsBuilder uri) {
-		if (newEvent.getId() != 0 || newEvent.getDescription() == null || newEvent.getCode()== null || newEvent.getTitle() == null) {
-			// Reject we'll assign the Event id
+	public ResponseEntity<?> addEvent(@RequestBody Event newEvent, UriComponentsBuilder uri) {
+		if (newEvent.getId() != 0 || newEvent.getCode() == null || newEvent.getTitle() == null || newEvent.getDescription() == null) {
+			// Reject we'll assign the event id
 			return ResponseEntity.badRequest().build();
 		}
 		newEvent = repo.save(newEvent);
@@ -52,44 +53,12 @@ public class EventApi {
 		return response;
 	}
 
-	//lookupEventByName GET
-	@GetMapping("/byname/{event}")
-	public ResponseEntity<?> lookupEventByNameGet(@PathVariable("event") String event,
-			UriComponentsBuilder uri) {
-		//ApiLogger.log("Event " + Event);
-		
-		Iterator<Event> events = repo.findAll().iterator();
-		while(events.hasNext()) {
-			Event eve = events.next();
-			if(eve.getTitle().equalsIgnoreCase(event)) {
-				ResponseEntity<?> response = ResponseEntity.ok(eve);
-				return response;				
-			}			
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-	}
-	
-	//lookupEventByName POST
-	@PostMapping("/byname")
-	public ResponseEntity<?> lookupEventByNamePost(@RequestBody String event, UriComponentsBuilder uri) {
-		//ApiLogger.log("Event: " + Event);
-		Iterator<Event> events = repo.findAll().iterator();
-		while(events.hasNext()) {
-			Event eve = events.next();
-			if(eve.getTitle().equals(event)) {
-				ResponseEntity<?> response = ResponseEntity.ok(eve);
-				return response;				
-			}			
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-	}	
-	
 	@PutMapping("/{eventId}")
 	public ResponseEntity<?> putEvent(
 			@RequestBody Event newEvent,
-			@PathVariable("eventId") long Id) 
+			@PathVariable("eventId") long eventId) 
 	{
-		if (newEvent.getId() != 0 || newEvent.getDescription() == null || newEvent.getCode()== null || newEvent.getTitle() == null) {
+		if (newEvent.getId() != eventId || newEvent.getCode() == null || newEvent.getTitle() == null || newEvent.getDescription() == null) {
 			return ResponseEntity.badRequest().build();
 		}
 		newEvent = repo.save(newEvent);
@@ -97,12 +66,11 @@ public class EventApi {
 	}	
 	
 	@DeleteMapping("/{eventId}")
-	public ResponseEntity<?> deleteEventById(@PathVariable("Id") long id) {
+	public ResponseEntity<?> deleteEventById(@PathVariable("eventId") long id) {
 		// repo.delete(id);
 		repo.deleteById(id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}	
-	
 	
 }
 

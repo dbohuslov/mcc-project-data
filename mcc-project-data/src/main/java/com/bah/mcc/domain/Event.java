@@ -20,7 +20,9 @@ public class Event {
 	private String title;
 	private String description;
 	
-	
+	public Event() {
+		// TODO Auto-generated constructor stub
+	}
 	public Event(Long id, String code, String title, String description) {
 		super();
 		this.id = id;

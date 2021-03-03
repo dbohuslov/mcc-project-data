@@ -1,7 +1,5 @@
 package com.bah.mcc.api;
-
 import java.net.URI;
-import java.util.Iterator;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +19,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.bah.mcc.domain.Registration;
 import com.bah.mcc.repository.RegistrationRepository;
 
-
 @RestController
-@RequestMapping("/registration")
+@RequestMapping("/registrations")
 public class RegistrationApi {
+
 	@Autowired
 	RegistrationRepository repo;
 
@@ -35,14 +33,14 @@ public class RegistrationApi {
 
 	@GetMapping("/{registrationId}")
 	public Optional<Registration> getRegistrationById(@PathVariable("registrationId") long id) {
-		//return repo.findOne(id);
+		// return repo.findOne(id);
 		return repo.findById(id);
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<?> addRegistration(@RequestBody Registration newRegistration, UriComponentsBuilder uri) {
-		if (newRegistration.getId() != 0 || newRegistration.getCustomer_name() == null || newRegistration.getEvent_name() == null || newRegistration.getNotes() == null || newRegistration.getNotes() == null) {
-			// Reject we'll assign the registration id
+		if (newRegistration.getId() != 0 || newRegistration.getEvent_name() == null || newRegistration.getCustomer_name() == null || newRegistration.getRegistration_date() == null) {
+			// Reject we'll assign the event id
 			return ResponseEntity.badRequest().build();
 		}
 		newRegistration = repo.save(newRegistration);
@@ -52,57 +50,23 @@ public class RegistrationApi {
 		return response;
 	}
 
-	//lookupRegistrationByName GET
-	@GetMapping("/byname/{registration}")
-	public ResponseEntity<?> lookupRegistrationByNameGet(@PathVariable("registration") String registration,
-			UriComponentsBuilder uri) {
-		//ApiLogger.log("registration " + registration);
-		
-		Iterator<Registration> registrations = repo.findAll().iterator();
-		while(registrations.hasNext()) {
-			Registration regist = registrations.next();
-			if(regist.getEvent_name().equalsIgnoreCase(registration)) {
-				ResponseEntity<?> response = ResponseEntity.ok(regist);
-				return response;				
-			}			
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-	}
-	
-	//lookupRegistrationByName POST
-	@PostMapping("/byname")
-	public ResponseEntity<?> lookupRegistrationByNamePost(@RequestBody String registration, UriComponentsBuilder uri) {
-		//ApiLogger.log("registration: " + registration);
-		Iterator<Registration> regist = repo.findAll().iterator();
-		while(regist.hasNext()) {
-			Registration reg = regist.next();
-			if(reg.getEvent_name().equals(registration)) {
-				ResponseEntity<?> response = ResponseEntity.ok(reg);
-				return response;				
-			}			
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-	}	
-	
-	
-	@PutMapping("/{registrationId}")
+	@PutMapping("/{eventId}")
 	public ResponseEntity<?> putRegistration(
 			@RequestBody Registration newRegistration,
-			@PathVariable("registrationId") long Id) 
+			@PathVariable("eventId") long eventId) 
 	{
-		if (newRegistration.getId() != 0 || newRegistration.getCustomer_name() == null || newRegistration.getEvent_name() == null || newRegistration.getNotes() == null || newRegistration.getNotes() == null) {
+		if (newRegistration.getEvent_name() == null || newRegistration.getCustomer_name() == null ) { //|| newRegistration.getRegistration_date() == null) {
 			return ResponseEntity.badRequest().build();
 		}
 		newRegistration = repo.save(newRegistration);
 		return ResponseEntity.ok().build();
 	}	
 	
-	@DeleteMapping("/{registrationId}")
-	public ResponseEntity<?> deleteRegistrationById(@PathVariable("registrationId") long id) {
+	@DeleteMapping("/{eventId}")
+	public ResponseEntity<?> deleteRegistrationById(@PathVariable("eventId") long id) {
 		// repo.delete(id);
 		repo.deleteById(id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}	
-	
 	
 }

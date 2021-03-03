@@ -21,7 +21,9 @@ public class Customer {
 	@Column(name="PASSWORD")
 	private String password;
 	
-	
+	public Customer() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	public Customer(Long id, String name, String email, String password) {
 		super();
