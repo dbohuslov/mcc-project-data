@@ -18,20 +18,20 @@ public class Registration {
 	private Date registration_date;
 	private String notes;
 	@Column(name = "EVENT_ID")
-	private String event_name;
+	private String event_id;
 	@Column(name="CUSTOMER_ID")
-	private String customer_name;
+	private String customer_id;
 	public Registration() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Registration(Long id, Date registration_date, String notes, String event_name, String customer_name) {
+	public Registration(Long id, Date registration_date, String notes, String event_id, String customer_id) {
 		super();
 		this.id = id;
 		this.registration_date = registration_date;
 		this.notes = notes;
-		this.event_name = event_name;
-		this.customer_name = customer_name;
+		this.event_id = event_id;
+		this.customer_id = customer_id;
 	}
 	public Long getId() {
 		return id;
@@ -51,23 +51,23 @@ public class Registration {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	public String getEvent_name() {
-		return event_name;
+
+	public String getEvent_id() {
+		return event_id;
 	}
-	public void setEvent_name(String event_name) {
-		this.event_name = event_name;
+
+	public void setEvent_id(String event_id) {
+		this.event_id = event_id;
 	}
-	public String getCustomer_name() {
-		return customer_name;
+
+	public String getCustomer_id() {
+		return customer_id;
 	}
-	public void setCustomer_name(String customer_name) {
-		this.customer_name = customer_name;
+
+	public void setCustomer_id(String customer_id) {
+		this.customer_id = customer_id;
 	}
-	@Override
-	public String toString() {
-		return "Registration [id=" + id + ", registration_date=" + registration_date + ", notes=" + notes
-				+ ", event_name=" + event_name + ", customer_name=" + customer_name + "]";
-	}
+	
 	
 	
 }

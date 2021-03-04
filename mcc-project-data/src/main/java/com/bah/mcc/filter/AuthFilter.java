@@ -22,7 +22,7 @@ import com.bah.mcc.util.JWTHelper;
 public class AuthFilter implements Filter{
 
 	//public static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-	private String auth_scope = "com.project.auth2.api";
+	private String auth_scope = "mcc.project.auth2.api";
 	private String api_scope = "com.bah.mcc.api";
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -31,6 +31,7 @@ public class AuthFilter implements Filter{
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		String uri = req.getRequestURI();
+		System.out.println(uri);
 		
 		
 		// for development purposes
@@ -54,10 +55,12 @@ public class AuthFilter implements Filter{
 		}else{
 			// check JWT token
 			String authheader = req.getHeader("authorization");
+			System.out.println(authheader);
 			if(authheader != null && authheader.length() > 7 && authheader.startsWith("Bearer")) {
 				String jwt_token = authheader.substring(7, authheader.length());
 				if(JWTHelper.verifyToken(jwt_token)) {
 					String request_scopes = JWTHelper.getScopes(jwt_token);
+					System.out.println(request_scopes);
 					if(request_scopes.contains(api_scope) || request_scopes.contains(auth_scope)) {
 						chain.doFilter(request, response);
 						return;
@@ -80,7 +83,7 @@ public class AuthFilter implements Filter{
 	public void destroy() {
 		ApiLogger.log("AuthFilter.destroy");	
 	}
-}
+
 	/*
 	 * public boolean verifyToken(String token) { try {
 	 * Jwts.parser().setSigningKey(key).parseClaimsJws(token); return true; } catch
@@ -92,4 +95,4 @@ public class AuthFilter implements Filter{
 	 * (JwtException e) { return null; } }
 	 */	
 	
-	
+}

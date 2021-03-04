@@ -1,5 +1,7 @@
 package com.bah.mcc.api;
+
 import java.net.URI;
+import java.util.Iterator;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,57 +18,59 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.bah.mcc.domain.Registration;
-import com.bah.mcc.repository.RegistrationRepository;
+import com.bah.mcc.repository.EventRepository;
 
+import com.bah.mcc.domain.Event;
+import com.bah.mcc.logger.ApiLogger;
+//
 @RestController
-@RequestMapping("/registrations")
-public class RegistrationApi {
-
+@RequestMapping("/events")
+public class EventAPI {
 	@Autowired
-	RegistrationRepository repo;
+	EventRepository repo;
 
 	@GetMapping
-	public Iterable<Registration> getAll() {
+	public Iterable<Event> getAll() {
 		return repo.findAll();
 	}
 
-	@GetMapping("/{registrationId}")
-	public Optional<Registration> getRegistrationById(@PathVariable("registrationId") long id) {
+	@GetMapping("/{eventId}")
+	public Optional<Event> getEventById(@PathVariable("eventId") long id) {
 		// return repo.findOne(id);
 		return repo.findById(id);
 	}
-
+	
 	@PostMapping
-	public ResponseEntity<?> addRegistration(@RequestBody Registration newRegistration, UriComponentsBuilder uri) {
-		if (newRegistration.getId() != 0 || newRegistration.getEvent_name() == null || newRegistration.getCustomer_name() == null || newRegistration.getRegistration_date() == null) {
+	public ResponseEntity<?> addEvent(@RequestBody Event newEvent, UriComponentsBuilder uri) {
+		if (newEvent.getId() != 0 || newEvent.getCode() == null || newEvent.getTitle() == null || newEvent.getDescription() == null) {
 			// Reject we'll assign the event id
 			return ResponseEntity.badRequest().build();
 		}
-		newRegistration = repo.save(newRegistration);
+		newEvent = repo.save(newEvent);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(newRegistration.getId()).toUri();
+				.buildAndExpand(newEvent.getId()).toUri();
 		ResponseEntity<?> response = ResponseEntity.created(location).build();
 		return response;
 	}
 
 	@PutMapping("/{eventId}")
-	public ResponseEntity<?> putRegistration(
-			@RequestBody Registration newRegistration,
+	public ResponseEntity<?> putEvent(
+			@RequestBody Event newEvent,
 			@PathVariable("eventId") long eventId) 
 	{
-		if (newRegistration.getEvent_name() == null || newRegistration.getCustomer_name() == null ) { //|| newRegistration.getRegistration_date() == null) {
+		if (newEvent.getId() != eventId || newEvent.getCode() == null || newEvent.getTitle() == null || newEvent.getDescription() == null) {
 			return ResponseEntity.badRequest().build();
 		}
-		newRegistration = repo.save(newRegistration);
+		newEvent = repo.save(newEvent);
 		return ResponseEntity.ok().build();
 	}	
 	
 	@DeleteMapping("/{eventId}")
-	public ResponseEntity<?> deleteRegistrationById(@PathVariable("eventId") long id) {
+	public ResponseEntity<?> deleteEventById(@PathVariable("eventId") long id) {
 		// repo.delete(id);
 		repo.deleteById(id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}	
 	
 }
+

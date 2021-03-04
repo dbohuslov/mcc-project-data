@@ -24,7 +24,7 @@ import com.bah.mcc.logger.ApiLogger;
 //mine
 @RestController
 @RequestMapping("/customers")
-public class CustomerApi {
+public class CustomerAPI {
 	@Autowired
 	CustomersRepository repo;
 
@@ -33,15 +33,16 @@ public class CustomerApi {
 		return repo.findAll();
 	}
 
-
 	@GetMapping("/{customerId}")
 	public Optional<Customer> getCustomerById(@PathVariable("customerId") long id) {
+		//return repo.findOne(id);
 		return repo.findById(id);
 	}
 	
 	@PostMapping
 	public ResponseEntity<?> addCustomer(@RequestBody Customer newCustomer, UriComponentsBuilder uri) {
 		if (newCustomer.getId() != 0 || newCustomer.getName() == null || newCustomer.getEmail() == null) {
+			// Reject we'll assign the customer id
 			return ResponseEntity.badRequest().build();
 		}
 		newCustomer = repo.save(newCustomer);
@@ -51,7 +52,7 @@ public class CustomerApi {
 		return response;
 	}
 
-
+	//lookupCustomerByName GET
 	@GetMapping("/byname/{username}")
 	public ResponseEntity<?> lookupCustomerByNameGet(@PathVariable("username") String username,
 			UriComponentsBuilder uri) {
@@ -69,13 +70,13 @@ public class CustomerApi {
 	}
 	
 	//lookupCustomerByName POST
-	@PostMapping("/byname")
+	@PostMapping("/byname/{username}")
 	public ResponseEntity<?> lookupCustomerByNamePost(@RequestBody String username, UriComponentsBuilder uri) {
 		ApiLogger.log("username: " + username);
 		Iterator<Customer> customers = repo.findAll().iterator();
 		while(customers.hasNext()) {
 			Customer cust = customers.next();
-			if(cust.getName().equals(username)) {
+			if(cust.getName().equalsIgnoreCase(username)){
 				ResponseEntity<?> response = ResponseEntity.ok(cust);
 				return response;				
 			}			
@@ -98,10 +99,10 @@ public class CustomerApi {
 	
 	@DeleteMapping("/{customerId}")
 	public ResponseEntity<?> deleteCustomerById(@PathVariable("customerId") long id) {
+		// repo.delete(id);
 		repo.deleteById(id);
-		// https://mvnrepository.com/artifact/hsqldb/hsqldb
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-
-}
-		
+	}	
+	
+	
 }

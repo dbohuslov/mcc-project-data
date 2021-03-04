@@ -1,4 +1,4 @@
-/*package com.bah.mcc.domain;
+package com.bah.mcc.domain;
 
 import org.json.JSONObject;
 
@@ -10,7 +10,7 @@ public class CustomerFactory {
         JSONObject jobj = new org.json.JSONObject(json_string); 
           
         // getting firstName and lastName 
-        int id = (int) jobj.get("id");
+        long id = (int) jobj.get("id");
         String name = (String) jobj.get("name"); 
         String email = (String) jobj.get("email"); 
         String password = (String) jobj.get("password"); 
@@ -37,5 +37,5 @@ public class CustomerFactory {
         return out;
 	}
 
-}*/
+}
 
